@@ -28,8 +28,8 @@ jobs:
           URL_PULL_REQUEST:  '${{ github.event.issue.pull_request.url }}'
         run: |
           PULL_REQUEST=$(curl ${URL_PULL_REQUEST} -u ${BOT_USER}:${BOT_TOKEN})
-          BASE=$(${PULL_REQUEST} | jq -r '.base')
-          HEAD=$(${PULL_REQUEST} | jq -r '.head')
+          BASE=$(echo ${PULL_REQUEST} | jq -r '.base')
+          HEAD=$(echo ${PULL_REQUEST} | jq -r '.head')
           echo ::set-output name=command::${COMMENT_BODY//@fedjabosnic /}
           echo ::set-output name=base::${BASE}
           echo ::set-output name=head::${HEAD}
