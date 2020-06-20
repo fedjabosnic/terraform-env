@@ -66,8 +66,12 @@ jobs:
           BASE_REF: ${{ needs.trigger.outputs.context.base.ref }}
           HEAD_REF: ${{ needs.trigger.outputs.context.head.ref }}
         run: |
+          echo ${BASE_REF}
+          echo ${HEAD_REF}
+
+          git checkout ${BASE_REF}
           git merge ${HEAD_REF} --ff-only
-          
+
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
