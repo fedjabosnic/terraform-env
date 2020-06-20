@@ -42,7 +42,7 @@ jobs:
         env:
           URL_REACTION:  '${{ github.event.comment.url }}/reactions'
         run: |
-          REACTION=$(curl ${URL_REACTION} -u bot:${GITHUB_TOKEN} -d '{"content": "eyes"}' -H 'Accept: application/vnd.github.squirrel-girl-preview+json')
+          REACTION=$(curl ${URL_REACTION} -u bot:${BOT_TOKEN} -d '{"content": "eyes"}' -H 'Accept: application/vnd.github.squirrel-girl-preview+json')
 
   merge:
     runs-on: ubuntu-latest
