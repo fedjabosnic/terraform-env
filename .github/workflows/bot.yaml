@@ -28,11 +28,9 @@ jobs:
           URL_PULL_REQUEST:  '${{ github.event.issue.pull_request.url }}'
         run: |
           PULL_REQUEST=$(curl ${URL_PULL_REQUEST} -u ${BOT_USER}:${BOT_TOKEN})
-          BASE=$(echo ${PULL_REQUEST} | jq -r '.base')
-          HEAD=$(echo ${PULL_REQUEST} | jq -r '.head')
           echo ::set-output name=command::${COMMENT_BODY//@fedjabosnic /}
-          echo ::set-output name=base::${BASE}
-          echo ::set-output name=head::${HEAD}
+          echo ::set-output name=base::$(echo ${PULL_REQUEST} | jq -r '.base.ref')
+          echo ::set-output name=head::$(echo ${PULL_REQUEST} | jq -r '.head.ref')
 
 
   hello:
@@ -63,13 +61,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ needs.trigger.outputs.context.base.ref }}
+          ref: ${{ needs.trigger.outputs.context.base }}
 
       - name: merge
         id: merge
         env:
-          BASE_REF: ${{ needs.trigger.outputs.context.base.ref }}
-          HEAD_REF: ${{ needs.trigger.outputs.context.head.ref }}
+          BASE_REF: ${{ needs.trigger.outputs.context.base }}
+          HEAD_REF: ${{ needs.trigger.outputs.context.head }}
         run: |
           echo ${BASE_REF}
           echo ${HEAD_REF}
