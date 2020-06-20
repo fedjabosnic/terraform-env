@@ -61,13 +61,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ needs.trigger.outputs.context.base }}
+          ref: ${{ needs.trigger.outputs.base }}
 
       - name: merge
         id: merge
         env:
-          BASE_REF: ${{ needs.trigger.outputs.context.base }}
-          HEAD_REF: ${{ needs.trigger.outputs.context.head }}
+          BASE_REF: ${{ needs.trigger.outputs.base }}
+          HEAD_REF: ${{ needs.trigger.outputs.head }}
         run: |
           echo ${BASE_REF}
           echo ${HEAD_REF}
