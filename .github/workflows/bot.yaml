@@ -27,10 +27,10 @@ jobs:
           COMMENT_BODY: '${{ github.event.comment.body }}'
           URL_PULL_REQUEST:  '${{ github.event.issue.pull_request.url }}'
         run: |
-          PULL_REQUEST=$(curl ${URL_PULL_REQUEST} -u ${BOT_USER}:${BOT_TOKEN})
+          PULL_REQUEST=$(curl ${URL_PULL_REQUEST} -u fedjabosnic:${BOT_TOKEN})
           echo ::set-output name=command::${COMMENT_BODY//@fedjabosnic /}
-          echo ::set-output name=base::$(echo ${PULL_REQUEST} | jq -r '.base.ref')
-          echo ::set-output name=head::$(echo ${PULL_REQUEST} | jq -r '.head.ref')
+          echo ::set-output name=base::$(echo ${PULL_REQUEST} | jq -r '.base')
+          echo ::set-output name=head::$(echo ${PULL_REQUEST} | jq -r '.head')
 
 
   hello:
@@ -61,19 +61,14 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ needs.trigger.outputs.base }}
+          ref: ${{ needs.trigger.outputs.base.ref }}
 
       - name: merge
         id: merge
         env:
-          BASE_REF: ${{ needs.trigger.outputs.base }}
-          HEAD_REF: ${{ needs.trigger.outputs.head }}
+          HEAD_SHA: ${{ needs.trigger.outputs.head.sha }}
         run: |
-          echo ${BASE_REF}
-          echo ${HEAD_REF}
-
-          git checkout ${BASE_REF}
-          git merge ${HEAD_REF} --ff-only
+          git merge ${HEAD_SHA} --ff-only
 
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
