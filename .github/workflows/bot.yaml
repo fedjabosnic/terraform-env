@@ -59,7 +59,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
           ref: ${{ needs.trigger.outputs.context.base.ref }}
-            
+
       - name: merge
         id: merge
         env:
@@ -67,7 +67,7 @@ jobs:
           HEAD_REF: ${{ needs.trigger.outputs.context.head.ref }}
         run: |
           git merge ${HEAD_REF} --ff-only
-
+          
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
