@@ -17,8 +17,10 @@ jobs:
     
     outputs:
       command: ${{ steps.check.outputs.command }}
-      base: ${{ steps.check.outputs.base }}
-      head: ${{ steps.check.outputs.head }}
+      base_ref: ${{ steps.check.outputs.base_ref }}
+      base_sha: ${{ steps.check.outputs.base_sha }}
+      head_ref: ${{ steps.check.outputs.head_ref }}
+      head_sha: ${{ steps.check.outputs.head_sha }}
     
     steps:
       - name: check
@@ -29,8 +31,10 @@ jobs:
         run: |
           PULL_REQUEST=$(curl ${URL_PULL_REQUEST} -u fedjabosnic:${BOT_TOKEN})
           echo ::set-output name=command::${COMMENT_BODY//@fedjabosnic /}
-          echo ::set-output name=base::$(echo ${PULL_REQUEST} | jq -r '.base')
-          echo ::set-output name=head::$(echo ${PULL_REQUEST} | jq -r '.head')
+          echo ::set-output name=base_ref::$(echo ${PULL_REQUEST} | jq -r '.base.ref')
+          echo ::set-output name=base_sha::$(echo ${PULL_REQUEST} | jq -r '.base.sha')
+          echo ::set-output name=head_ref::$(echo ${PULL_REQUEST} | jq -r '.head.ref')
+          echo ::set-output name=head_sha::$(echo ${PULL_REQUEST} | jq -r '.head.sha')
 
 
   hello:
@@ -53,21 +57,24 @@ jobs:
 
     if: needs.trigger.outputs.command == '/merge'
 
+    env:
+      BASE_REF: ${{ needs.trigger.outputs.base_ref }}
+      BASE_SHA: ${{ needs.trigger.outputs.base_sha }}
+      HEAD_REF: ${{ needs.trigger.outputs.head_ref }}
+      HEAD_SHA: ${{ needs.trigger.outputs.head_sha }}
+
     steps:
       
       - name: pull code
-        id: pull
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ needs.trigger.outputs.base.ref }}
 
       - name: merge
         id: merge
-        env:
-          HEAD_SHA: ${{ needs.trigger.outputs.head }}
         run: |
+          git checkout ${BASE_REF}
           git merge ${HEAD_SHA} --ff-only
 
       - name: Push changes
