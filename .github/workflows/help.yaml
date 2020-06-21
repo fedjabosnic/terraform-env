@@ -21,5 +21,5 @@ jobs:
             > Command   | Description
             > --------- | -----------
             > `/help`   | Display help
-            > `/hello`  | Say hello to the bot and he will say hi back
+            > `/hello`  | Say hello to the bot
             > `/merge`  | Merge the current pull request (_using the `--ff-only` flag_)

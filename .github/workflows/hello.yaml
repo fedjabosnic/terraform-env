@@ -6,7 +6,7 @@ on:
 
 jobs:
   
-  action:
+  hello:
     name: Process 'hello' command
     runs-on: ubuntu-latest
     steps:
@@ -14,9 +14,8 @@ jobs:
       - name: Say hi back
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-          token: ${{ secrets.BOT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           issue-number: ${{ github.event.client_payload.pull_request.number }}
-          reaction-type: +1
           body: |
             Hi @${{github.event.client_payload.github.payload.comment.user.login}}!
