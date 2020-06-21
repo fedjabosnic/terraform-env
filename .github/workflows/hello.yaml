@@ -1,0 +1,21 @@
+name: hello
+
+on:
+  repository_dispatch:
+    types: [hello-command]
+
+jobs:
+  
+  hello:
+    name: Process 'hello' command
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Say hi back
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          reaction-type: laugh
