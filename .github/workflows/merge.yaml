@@ -36,11 +36,11 @@ jobs:
   confirm:
     name: Confirm command outcome
     runs-on: ubuntu-latest
-    needs: action
+    needs: merge
     steps:
 
       - name: Confirm success
-        if: needs.action.result == 'success'
+        if: needs.merge.result == 'success'
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -49,7 +49,7 @@ jobs:
           reaction-type: rocket
 
       - name: Confirm failure
-        if: needs.action.result == 'failure'
+        if: needs.merge.result == 'failure'
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
