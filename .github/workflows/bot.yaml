@@ -66,7 +66,7 @@ jobs:
       - name: merge
         id: merge
         env:
-          HEAD_SHA: ${{ needs.trigger.outputs.head.sha }}
+          HEAD_SHA: ${{ needs.trigger.outputs.head }}
         run: |
           git merge ${HEAD_SHA} --ff-only
 
