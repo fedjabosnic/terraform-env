@@ -53,4 +53,4 @@ jobs:
           body: |
             > Failed to merge, please check the logs [here][1]
 
-            [1]: https://github.com/${{github.event.client_payload.github.repository}}/actions/runs/${{github.event.client_payload.github.run_id}}
+            [1]: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
