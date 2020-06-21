@@ -9,7 +9,6 @@ jobs:
   merge:
     name: Process command
     runs-on: ubuntu-latest
-    needs: acknowledge
     env:
       BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       BASE_REF: ${{ github.event.client_payload.pull_request.base.ref }}
