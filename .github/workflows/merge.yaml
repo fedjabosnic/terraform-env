@@ -14,7 +14,7 @@ jobs:
       - name: Acknowledge
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-          token: ${{ secrets.BOT_TOKEN }}
+          token: ${{ env.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           reaction-type: eyes
@@ -22,6 +22,7 @@ jobs:
   action:
     name: Process 'merge' command
     runs-on: ubuntu-latest
+    needs: acknowledge
     env:
       BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       BASE_REF: ${{ github.event.client_payload.pull_request.base.ref }}
@@ -55,7 +56,7 @@ jobs:
         if: needs.action.result == 'success'
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-          token: ${{ env.BOT_TOKEN }}
+          token: ${{ env.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           reaction-type: rocket
@@ -64,7 +65,7 @@ jobs:
         if: needs.action.result == 'failure'
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-          token: ${{ env.BOT_TOKEN }}
+          token: ${{ env.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           reaction-type: -1
