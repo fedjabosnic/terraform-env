@@ -6,7 +6,7 @@ on:
 
 jobs:
   
-  achnowledge:
+  acknowledge:
     name: Acknowledge 'hello' command
     runs-on: ubuntu-latest
     steps:
