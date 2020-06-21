@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Reply with help
+      - name: Print help
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
