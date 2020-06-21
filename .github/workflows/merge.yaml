@@ -43,7 +43,7 @@ jobs:
           reaction-type: rocket
 
       - name: Confirm failure
-        if: failure
+        if: failure()
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
