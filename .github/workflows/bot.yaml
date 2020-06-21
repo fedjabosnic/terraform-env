@@ -69,11 +69,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          persist-credentials: false
+          ref: ${{ env.BASE_REF }}
 
-      - name: merge
+      - name: merge code
         id: merge
         run: |
-          git checkout ${BASE_REF}
           git merge ${HEAD_SHA} --ff-only
-          git push origin
+
+      - name: push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.BOT_TOKEN }}
+          branch: ${{ env.BASE_REF }}
