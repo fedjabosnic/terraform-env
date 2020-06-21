@@ -6,17 +6,28 @@ on:
 
 jobs:
   
+  achnowledge:
+    name: Acknowledge 'hello' command
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Acknowledge
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          reaction-type: eyes
+
   action:
     name: Process 'merge' command
     runs-on: ubuntu-latest
-
     env:
       BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       BASE_REF: ${{ github.event.client_payload.pull_request.base.ref }}
       HEAD_SHA: ${{ github.event.client_payload.pull_request.head.sha }}
-
     steps:
-      
+
       - name: Pull code
         uses: actions/checkout@v2
         with:
@@ -38,7 +49,6 @@ jobs:
     name: Confirm outcome
     runs-on: ubuntu-latest
     needs: action
-
     steps:
 
       - name: Confirm success
