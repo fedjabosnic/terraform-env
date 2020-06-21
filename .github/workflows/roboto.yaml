@@ -18,6 +18,7 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
           issue-type: pull-request
           permission: write
+          reactions: false
           commands: hello
 
       - name: dispatch command (admin)
@@ -26,4 +27,5 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
           issue-type: pull-request
           permission: admin
+          reactions: false
           commands: merge
