@@ -1,0 +1,25 @@
+name: help
+
+on:
+  repository_dispatch:
+    types: [help-command]
+
+jobs:
+  
+  help:
+    name: Process 'help' command
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Reply with help
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          body: |
+            > Command   | Description
+            > --------- | -----------
+            > `/help`   | Display help
+            > `/hello`  | Say hello to the bot and he will say hi back
+            > `/merge`  | Merge the current pull request (_using the `--ff-only` flag_)
