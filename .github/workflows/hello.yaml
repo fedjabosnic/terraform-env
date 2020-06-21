@@ -9,7 +9,6 @@ jobs:
   action:
     name: Process 'hello' command
     runs-on: ubuntu-latest
-    needs: acknowledge
     steps:
 
       - name: Say hi back
