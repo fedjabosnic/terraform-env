@@ -25,7 +25,6 @@ jobs:
         id: merge
         run: |
           git merge ${HEAD_SHA} --ff-only
-          return 1
 
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
