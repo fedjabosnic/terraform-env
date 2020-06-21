@@ -50,6 +50,7 @@ jobs:
           exit 1
 
       - name: Set deployment status
+        if: always()
         uses: octokit/request-action@v2.x
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
