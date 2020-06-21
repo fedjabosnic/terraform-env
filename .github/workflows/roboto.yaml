@@ -12,6 +12,15 @@ jobs:
 
     steps:
 
+      - name: dispatch command (public)
+        uses: peter-evans/slash-command-dispatch@v1.2.0
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          issue-type: pull-request
+          permission: none
+          reactions: false
+          commands: help
+
       - name: dispatch command (contributor)
         uses: peter-evans/slash-command-dispatch@v1.2.0
         with:
