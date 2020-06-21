@@ -47,7 +47,7 @@ jobs:
         run: |
           # deployment logic goes here
           sleep 10
-          exit 1
+          exit 0
 
       - name: Set deployment status
         if: always()
