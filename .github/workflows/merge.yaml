@@ -1,0 +1,55 @@
+name: merge
+
+on:
+  repository_dispatch:
+    types: [merge-command]
+
+jobs:
+
+  merge:
+    name: Process command
+    runs-on: ubuntu-latest
+    env:
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      BASE_REF: ${{ github.event.client_payload.pull_request.base.ref }}
+      HEAD_SHA: ${{ github.event.client_payload.pull_request.head.sha }}
+    steps:
+
+      - name: Pull code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ env.BASE_REF }}
+
+      - name: Merge code (ff-only)
+        id: merge
+        run: |
+          git merge ${HEAD_SHA} --ff-only
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ env.BOT_TOKEN }}
+          branch: ${{ env.BASE_REF }}
+
+      - name: Confirm success
+        if: success()
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          reaction-type: rocket
+
+      - name: Confirm failure
+        if: failure()
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          reaction-type: -1
+          body: |
+            > Failed to merge, please check the logs [here][1]
+
+            [1]: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

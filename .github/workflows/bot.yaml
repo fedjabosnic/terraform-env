@@ -1,0 +1,93 @@
+# name: bot
+
+# on:
+#   issue_comment:
+#     types: [created]
+
+# env:
+#   BOT_USER: '${{ secrets.BOT_USER }}'
+#   BOT_TOKEN: '${{ secrets.BOT_TOKEN }}'
+#   BOT_EMAIL: '${{ secrets.BOT_EMAIL }}'
+
+# jobs:
+
+#   trigger:
+#     runs-on: ubuntu-latest
+#     if: github.event.issue.pull_request && startsWith(github.event.comment.body, '@fedjabosnic')
+    
+#     outputs:
+#       command: ${{ steps.check.outputs.command }}
+#       base_ref: ${{ steps.check.outputs.base_ref }}
+#       base_sha: ${{ steps.check.outputs.base_sha }}
+#       head_ref: ${{ steps.check.outputs.head_ref }}
+#       head_sha: ${{ steps.check.outputs.head_sha }}
+    
+#     steps:
+#       - name: check
+#         id: check
+#         env:
+#           COMMENT_BODY: '${{ github.event.comment.body }}'
+#           URL_PULL_REQUEST:  '${{ github.event.issue.pull_request.url }}'
+#         run: |
+#           PULL_REQUEST=$(curl ${URL_PULL_REQUEST} -u fedjabosnic:${BOT_TOKEN})
+#           echo ::set-output name=command::${COMMENT_BODY//@fedjabosnic /}
+#           echo ::set-output name=base_ref::$(echo ${PULL_REQUEST} | jq -r '.base.ref')
+#           echo ::set-output name=base_sha::$(echo ${PULL_REQUEST} | jq -r '.base.sha')
+#           echo ::set-output name=head_ref::$(echo ${PULL_REQUEST} | jq -r '.head.ref')
+#           echo ::set-output name=head_sha::$(echo ${PULL_REQUEST} | jq -r '.head.sha')
+
+
+#   hello:
+#     runs-on: ubuntu-latest
+#     needs: trigger
+
+#     if: needs.trigger.outputs.command == '/hello'
+
+#     steps:
+    
+#       - name: hi
+#         id: hi
+#         env:
+#           URL_REACTION:  '${{ github.event.comment.url }}/reactions'
+#         run: |
+#           REACTION=$(curl ${URL_REACTION} -u bot:${BOT_TOKEN} -d '{"content": "eyes"}' -H 'Accept: application/vnd.github.squirrel-girl-preview+json')
+
+#   merge:
+#     runs-on: ubuntu-latest
+#     needs: trigger
+
+#     if: needs.trigger.outputs.command == '/merge'
+
+#     env:
+#       BASE_REF: ${{ needs.trigger.outputs.base_ref }}
+#       BASE_SHA: ${{ needs.trigger.outputs.base_sha }}
+#       HEAD_REF: ${{ needs.trigger.outputs.head_ref }}
+#       HEAD_SHA: ${{ needs.trigger.outputs.head_sha }}
+
+#     steps:
+      
+#       - name: pull code
+#         uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0
+#           ref: ${{ env.BASE_REF }}
+
+#       - name: merge code
+#         id: merge
+#         run: |
+#           git merge ${HEAD_SHA} --ff-only
+
+#       - name: push changes
+#         uses: ad-m/github-push-action@v0.6.0
+#         with:
+#           github_token: ${{ env.BOT_TOKEN }}
+#           branch: ${{ env.BASE_REF }}
+      
+#       - name: confirm status
+#         env:
+#           STATUS: ${{ job.status }}
+#           URL_REACTION:  '${{ github.event.comment.url }}/reactions'
+#         run: |
+          
+#           REACTION=$(curl ${URL_REACTION} -u bot:${BOT_TOKEN} -d '{"content": "eyes"}' -H 'Accept: application/vnd.github.squirrel-girl-preview+json')
+

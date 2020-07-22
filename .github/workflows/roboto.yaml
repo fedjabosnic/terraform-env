@@ -1,0 +1,40 @@
+name: roboto
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  
+  trigger:
+    name: trigger
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: dispatch command (public)
+        uses: peter-evans/slash-command-dispatch@v1.2.0
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          issue-type: pull-request
+          permission: none
+          reactions: false
+          commands: help
+
+      - name: dispatch command (contributor)
+        uses: peter-evans/slash-command-dispatch@v1.2.0
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          issue-type: pull-request
+          permission: write
+          reactions: false
+          commands: hello
+
+      - name: dispatch command (admin)
+        uses: peter-evans/slash-command-dispatch@v1.2.0
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          issue-type: pull-request
+          permission: admin
+          reactions: false
+          commands: merge, deploy
