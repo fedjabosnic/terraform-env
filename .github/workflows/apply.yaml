@@ -13,7 +13,6 @@ jobs:
       TF_VERSION: 0.12.26
       BASE_REF: ${{ github.event.client_payload.pull_request.base.ref }}
       HEAD_SHA: ${{ github.event.client_payload.pull_request.head.sha }}
-      ENVIRONMENT: ${{ github.event.client_payload.environment }}
 
     steps:
 
@@ -35,11 +34,14 @@ jobs:
 
       - name: Parse parameters
         run: |
-          if [$(echo ${BASE_REF} | cut -d'/' -f2) != 'env'] return 1
+          if [$(echo ${BASE_REF} | cut -d'/' -f1) != 'env'] then
+            echo "This is not an environment branch"
+            return 1
+          fi
 
-          echo ::set-env name=PLATFORM::   $(echo ${BASE_REF} | cut -d'/' -f3)
-          echo ::set-env name=ENVIRONMENT::$(echo ${BASE_REF} | cut -d'/' -f4)
-          echo ::set-env name=REGION::     $(echo ${BASE_REF} | cut -d'/' -f5)
+          echo ::set-env name=PLATFORM::   $(echo ${BASE_REF} | cut -d'/' -f2)
+          echo ::set-env name=ENVIRONMENT::$(echo ${BASE_REF} | cut -d'/' -f3)
+          echo ::set-env name=REGION::     $(echo ${BASE_REF} | cut -d'/' -f4)
 
       - name: tf apply (${{ env.BASE_REF }}) zookeeper
         run: |
