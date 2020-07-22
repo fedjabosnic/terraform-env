@@ -41,9 +41,9 @@ jobs:
             exit 1
           fi
 
-          echo ::set-env name=PLATFORM::   $(echo ${BASE_REF} | cut -d'/' -f2)
+          echo ::set-env name=PLATFORM   ::$(echo ${BASE_REF} | cut -d'/' -f2)
           echo ::set-env name=ENVIRONMENT::$(echo ${BASE_REF} | cut -d'/' -f3)
-          echo ::set-env name=REGION::     $(echo ${BASE_REF} | cut -d'/' -f4)
+          echo ::set-env name=REGION     ::$(echo ${BASE_REF} | cut -d'/' -f4)
 
       - name: tf apply (${{ env.BASE_REF }}) zookeeper
         run: |
