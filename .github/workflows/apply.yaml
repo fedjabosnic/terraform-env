@@ -37,7 +37,7 @@ jobs:
           ENV=$(echo ${BASE_REF} | cut -d'/' -f1)
 
           if [ "$ENV" != "env" ]; then
-            echo "This is not an environment branch"
+            >&2 echo "This is not an environment branch"
             exit 1
           fi
 
