@@ -18,7 +18,7 @@ jobs:
       - name: Check
         run: |
           echo ${{ toJson(github) }}
-          echo ---
+          echo "---"
           echo ${{ toJson(env) }}
 
       - name: Setup
