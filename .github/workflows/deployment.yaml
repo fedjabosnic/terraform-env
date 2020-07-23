@@ -44,8 +44,8 @@ jobs:
           echo ::set-env name=ENVIRONMENT ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f3)
           echo ::set-env name=REGION      ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f4)
 
-          for stack ( ${STACKS} )
-            echo "make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} satck=$stack
+          foreach stack ( ${STACKS} )
+            echo "make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=$stack
           end
 
           # make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=zookeeper
