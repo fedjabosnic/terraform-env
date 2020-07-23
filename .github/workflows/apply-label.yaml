@@ -16,7 +16,7 @@ jobs:
 
       - name: Setup
         run: |
-          if [[ ${GITHUB_BASE_REF} =~ ^env\/.* ]]; then >&2 echo "error"; exit 1; fi
+          if [[ "${GITHUB_BASE_REF}" =~ ^env\/.* ]]; then >&2 echo "error"; exit 1; fi
 
           echo ::set-env name=PLATFORM::    $(echo ${GITHUB_BASE_REF} | cut -d'/' -f3)
           echo ::set-env name=ENVIRONMENT:: $(echo ${GITHUB_BASE_REF} | cut -d'/' -f4)
@@ -29,4 +29,3 @@ jobs:
           echo "${{ toJson(github) }}"
           echo "---"
           echo "${{ toJson(env) }}"
-          
