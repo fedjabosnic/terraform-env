@@ -12,13 +12,11 @@ jobs:
       - name: print
         run: |
           printenv
-          echo ${{ github }}}
-          echo ${{ env }}
+          echo ${{ toJson(github) }}}
+          echo ${{ toJson(env) }}
 
   deploy:
-    name: Deploy
     runs-on: ubuntu-latest
-    
     if: github.event.action == 'labeled' && github.event.label.name =='deploy'
 
     steps:
@@ -36,9 +34,7 @@ jobs:
           echo "Deployed to ${PLATFORM}/${ENVIRONMENT}/${REGION}!"
 
   rollback:
-    name: Rollback
     runs-on: ubuntu-latest
-    
     if: github.event.action == 'unlabeled' && github.event.label.name =='deploy'
 
     steps:
