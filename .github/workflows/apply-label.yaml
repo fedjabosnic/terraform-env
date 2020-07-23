@@ -16,24 +16,64 @@ jobs:
           echo ${{ toJson(env) }}
 
   deploy:
+    name: deploy github.base_ref
     runs-on: ubuntu-latest
-    if: github.event.action == 'labeled' && github.event.label.name =='deploy'
+    if: startsWith(github.base_ref, "env/") && github.event.action == 'labeled' && github.event.label.name =='deploy'
 
     steps:
 
+      - name: Pull code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ env.BASE_REF }}
+
+      # - name: Unlock secrets
+      #   uses: sliteteam/github-action-git-crypt-unlock@1.0.2
+      #   env:
+      #     GIT_CRYPT_KEY: ${{ secrets.GIT_CRYPT_KEY }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1.1.0
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
       - name: Setup
         run: |
-          if [[ ! "${GITHUB_BASE_REF}" =~ ^env\/.* ]]; then >&2 echo "error"; exit 1; fi
-
           echo ::set-env name=PLATFORM    ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f2)
           echo ::set-env name=ENVIRONMENT ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f3)
           echo ::set-env name=REGION      ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f4)
 
-      - name: Verify
+      - name: tf apply (${{ env.BASE_REF }}) zookeeper
+        run: |
+          make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=zookeeper
+
+      - name: tf apply (${{ env.BASE_REF }}) cassandra
+        run: |
+          make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=cassandra
+
+      - name: tf apply (${{ env.BASE_REF }}) kafka
+        run: |
+          make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=kafka
+
+      - name: tf apply (${{ env.BASE_REF }}) storm
+        run: |
+          make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=storm
+
+      - name: tf apply (${{ env.BASE_REF }}) efid
+        run: |
+          make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=efid
+
+      - name: tf apply (${{ env.BASE_REF }}) school
+        run: |
+          make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=school
+
+      - name: verify
         run: |
           echo "Deployed to ${PLATFORM}/${ENVIRONMENT}/${REGION}!"
 
   rollback:
+    name: deploy github.base_ref
     runs-on: ubuntu-latest
     if: github.event.action == 'unlabeled' && github.event.label.name =='deploy'
 
