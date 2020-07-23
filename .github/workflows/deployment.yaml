@@ -5,8 +5,8 @@ on:
     types: [labeled, unlabeled]
 
 env:
-  STACKS: "zookeeper cassandra kafka storm efid school"
   TF_VERSION: 0.12.26
+  STACKS: "zookeeper cassandra kafka storm efid school"
 
 jobs:
 
@@ -17,7 +17,7 @@ jobs:
         run: |
           printenv
           echo "${{ toJson(github) }}}"
-          echo "${{ toJson(env) }}"
+          echo "${{ toJson(env) }}" 
 
   deploy:
     name: deploy ${{ github.base_ref }}
@@ -46,7 +46,7 @@ jobs:
 
           for stack in ${STACKS}
           do
-            echo "make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=$stack"
+            echo "make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=$stack approve=true"
           done
 
       - name: verify
