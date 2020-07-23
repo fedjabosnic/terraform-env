@@ -9,6 +9,9 @@ jobs:
   deploy:
     name: Process command
     runs-on: ubuntu-latest
+    
+    if: github.event.action.labeled && equals(github.event.label.name, 'deploy')
+    
     env:
       TF_VERSION: 0.12.26
 
@@ -18,9 +21,9 @@ jobs:
         run: |
           if [[ ! "${GITHUB_BASE_REF}" =~ ^env\/.* ]]; then >&2 echo "error"; exit 1; fi
 
-          echo ::set-env name=PLATFORM::    $(echo ${GITHUB_BASE_REF} | cut -d'/' -f3)
-          echo ::set-env name=ENVIRONMENT:: $(echo ${GITHUB_BASE_REF} | cut -d'/' -f4)
-          echo ::set-env name=REGION::      $(echo ${GITHUB_BASE_REF} | cut -d'/' -f5)
+          echo ::set-env name=PLATFORM    ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f2)
+          echo ::set-env name=ENVIRONMENT ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f3)
+          echo ::set-env name=REGION      ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f4)
 
       - name: Check
         run: |
