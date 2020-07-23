@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [labeled, unlabeled]
 
+env:
+  TF_VERSION: 0.12.26
+
 jobs:
 
   check:
@@ -17,8 +20,9 @@ jobs:
 
   deploy:
     name: deploy ${{ github.base_ref }}
-    runs-on: ubuntu-latest
     if: startsWith(github.base_ref, 'env/') && github.event.action == 'labeled' && github.event.label.name =='deploy'
+
+    runs-on: ubuntu-latest
 
     steps:
 
@@ -28,13 +32,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ env.BASE_REF }}
 
-      # - name: Unlock secrets
-      #   uses: sliteteam/github-action-git-crypt-unlock@1.0.2
-      #   env:
-      #     GIT_CRYPT_KEY: ${{ secrets.GIT_CRYPT_KEY }}
-
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1.0.1
+        uses: hashicorp/setup-terraform@v1.1.0
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
@@ -44,27 +43,27 @@ jobs:
           echo ::set-env name=ENVIRONMENT ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f3)
           echo ::set-env name=REGION      ::$(echo ${GITHUB_BASE_REF} | cut -d'/' -f4)
 
-      - name: tf apply (${{ env.BASE_REF }}) zookeeper
+      - name: tf apply (${{ github.base_ref }}) zookeeper
         run: |
           make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=zookeeper
 
-      - name: tf apply (${{ env.BASE_REF }}) cassandra
+      - name: tf apply (${{ github.base_ref }}) cassandra
         run: |
           make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=cassandra
 
-      - name: tf apply (${{ env.BASE_REF }}) kafka
+      - name: tf apply (${{ github.base_ref }}) kafka
         run: |
           make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=kafka
 
-      - name: tf apply (${{ env.BASE_REF }}) storm
+      - name: tf apply (${{ github.base_ref }}) storm
         run: |
           make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=storm
 
-      - name: tf apply (${{ env.BASE_REF }}) efid
+      - name: tf apply (${{ github.base_ref }}) efid
         run: |
           make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=efid
 
-      - name: tf apply (${{ env.BASE_REF }}) school
+      - name: tf apply (${{ github.base_ref }}) school
         run: |
           make apply platform=${PLATFORM} environment=${ENVIRONMENT} region=${REGION} stack=school
 
