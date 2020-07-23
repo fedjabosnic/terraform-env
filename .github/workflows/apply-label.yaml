@@ -16,7 +16,7 @@ jobs:
           echo ${{ toJson(env) }}
 
   deploy:
-    name: deploy github.base_ref
+    name: deploy ${{ github.base_ref }}
     runs-on: ubuntu-latest
     if: startsWith(github.base_ref, 'env/') && github.event.action == 'labeled' && github.event.label.name =='deploy'
 
