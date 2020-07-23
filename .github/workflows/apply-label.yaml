@@ -18,7 +18,7 @@ jobs:
   deploy:
     name: deploy github.base_ref
     runs-on: ubuntu-latest
-    if: startsWith(github.base_ref, "env/") && github.event.action == 'labeled' && github.event.label.name =='deploy'
+    if: startsWith(github.base_ref, 'env/'') && github.event.action == 'labeled' && github.event.label.name =='deploy'
 
     steps:
 
