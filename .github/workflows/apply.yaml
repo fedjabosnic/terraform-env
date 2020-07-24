@@ -18,9 +18,12 @@ jobs:
 
       - name: Dump the client payload context
         env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
           PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
-        run: echo "$PAYLOAD_CONTEXT"
-        
+        run: |
+          echo "$GITHUB_CONTEXT"
+          echo "$PAYLOAD_CONTEXT"
+
       - name: Pull code
         uses: actions/checkout@v2
         with:
