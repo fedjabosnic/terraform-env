@@ -16,13 +16,21 @@ jobs:
 
     steps:
 
+      - name: Dump the client payload context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+          PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+          echo "$PAYLOAD_CONTEXT"
+
       - name: Pull code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           ref: ${{ env.HEAD_SHA }}
 
-      - name: Setup Terraform
+      - name: Setup terraform
         uses: hashicorp/setup-terraform@v1.1.0
         with:
           terraform_version: ${{ env.TF_VERSION }}
@@ -34,14 +42,13 @@ jobs:
 
       - name: Parse parameters
         run: |
-          if [$(echo ${BASE_REF} | cut -d'/' -f1) != 'env'] then
-            echo "This is not an environment branch"
-            exit 1
+          if [ "$(echo ${BASE_REF} | cut -d'/' -f1)" != "env" ]; then
+            >&2 echo "This is not an environment branch"
           fi
 
-          echo ::set-env name=PLATFORM::   $(echo ${BASE_REF} | cut -d'/' -f2)
-          echo ::set-env name=ENVIRONMENT::$(echo ${BASE_REF} | cut -d'/' -f3)
-          echo ::set-env name=REGION::     $(echo ${BASE_REF} | cut -d'/' -f4)
+          echo ::set-env name=PLATFORM    ::$(echo ${BASE_REF} | cut -d'/' -f2)
+          echo ::set-env name=ENVIRONMENT ::$(echo ${BASE_REF} | cut -d'/' -f3)
+          echo ::set-env name=REGION      ::$(echo ${BASE_REF} | cut -d'/' -f4)
 
       - name: tf apply (${{ env.BASE_REF }}) zookeeper
         run: |
